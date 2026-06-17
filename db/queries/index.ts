@@ -12,4 +12,5 @@ export * from './learning-logs';
 export * from './glossary';
 export * from './settings';
 export * from './dashboard';
+export * from './today';
 export * from './search';

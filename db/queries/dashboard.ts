@@ -62,7 +62,7 @@ export async function getScoringData(): Promise<ScoringData> {
   };
 }
 
-function computeStreak(dates: Date[], now: Date): number {
+export function computeStreak(dates: Date[], now: Date): number {
   if (dates.length === 0) return 0;
   const days = new Set(
     dates.map((d) => startOfDay(d).getTime()),
@@ -78,6 +78,35 @@ function computeStreak(dates: Date[], now: Date): number {
     cursor = startOfDay(subDays(new Date(cursor), 1)).getTime();
   }
   return streak;
+}
+
+/** First incomplete lesson in an in-progress module, else first incomplete lesson. */
+export function pickRecommendedLesson(
+  lessons: Lesson[],
+  inProgressModuleIds: Set<string>,
+): Lesson | null {
+  return (
+    lessons
+      .filter(
+        (l) => inProgressModuleIds.has(l.moduleId) && l.status !== 'completed',
+      )
+      .sort((a, b) => a.order - b.order)[0] ??
+    lessons
+      .filter((l) => l.status !== 'completed')
+      .sort((a, b) => a.order - b.order)[0] ??
+    null
+  );
+}
+
+/** Resume an in-progress lab, else the next not-started one. */
+export function pickRecommendedLab(labs: Lab[]): Lab | null {
+  return (
+    labs
+      .filter((l) => l.status === 'in-progress')
+      .sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime())[0] ??
+    labs.filter((l) => l.status === 'not-started')[0] ??
+    null
+  );
 }
 
 export interface DashboardData {
@@ -182,23 +211,11 @@ export async function getDashboardData(
 
   // Recommend the first incomplete lesson in an in-progress module.
   const inProgressModuleIds = new Set(modulesInProgress.map((m) => m.id));
-  const recommendedLesson =
-    data.lessons
-      .filter(
-        (l) => inProgressModuleIds.has(l.moduleId) && l.status !== 'completed',
-      )
-      .sort((a, b) => a.order - b.order)[0] ??
-    data.lessons
-      .filter((l) => l.status !== 'completed')
-      .sort((a, b) => a.order - b.order)[0] ??
-    null;
-
-  const recommendedLab =
-    data.labs
-      .filter((l) => l.status === 'in-progress')
-      .sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime())[0] ??
-    data.labs.filter((l) => l.status === 'not-started')[0] ??
-    null;
+  const recommendedLesson = pickRecommendedLesson(
+    data.lessons,
+    inProgressModuleIds,
+  );
+  const recommendedLab = pickRecommendedLab(data.labs);
 
   // Time + confidence series from the learning log (last 14 entries by day).
   const weekAgo = subDays(now, 7);

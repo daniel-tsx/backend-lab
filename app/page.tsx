@@ -2,6 +2,7 @@ import Link from 'next/link';
 import {
   ArrowRight,
   Brain,
+  CalendarCheck,
   CheckCircle2,
   Flame,
   FlaskConical,
@@ -90,16 +91,22 @@ export default async function DashboardPage() {
         title="Dashboard"
         description="Where your backend knowledge stands, and what to work on next."
         actions={
-          counts.dueReviews > 0 ? (
-            <Button render={<Link href="/reviews" />} className="gap-1.5">
-              <Brain className="size-4" />
-              Review {counts.dueReviews} due
+          <>
+            <Button variant="outline" render={<Link href="/today" />} className="gap-1.5">
+              <CalendarCheck className="size-4" />
+              Today
             </Button>
-          ) : (
-            <Button variant="outline" render={<Link href="/reviews" />}>
-              Review center
-            </Button>
-          )
+            {counts.dueReviews > 0 ? (
+              <Button render={<Link href="/reviews" />} className="gap-1.5">
+                <Brain className="size-4" />
+                Review {counts.dueReviews} due
+              </Button>
+            ) : (
+              <Button variant="outline" render={<Link href="/reviews" />}>
+                Review center
+              </Button>
+            )}
+          </>
         }
       />
 
