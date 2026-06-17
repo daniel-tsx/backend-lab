@@ -74,6 +74,28 @@ export async function createReviewCard(
   return row;
 }
 
+/**
+ * Bulk-create review cards from drafts captured in a completion flow.
+ * Skips drafts without a question; links each card to a concept or lesson.
+ */
+export async function createReviewCardsFromDrafts(
+  drafts: { question: string; answer: string }[],
+  link: { conceptId?: string | null; lessonId?: string | null },
+): Promise<number> {
+  const rows = drafts
+    .filter((d) => d.question.trim().length > 0)
+    .map((d) => ({
+      question: d.question.trim(),
+      answer: d.answer ?? '',
+      relatedConceptId: link.conceptId ?? null,
+      relatedLessonId: link.lessonId ?? null,
+      ...initialSchedule(),
+    }));
+  if (rows.length === 0) return 0;
+  await db.insert(reviewCards).values(rows);
+  return rows.length;
+}
+
 export async function updateReviewCard(
   id: string,
   input: ReviewCardInput,

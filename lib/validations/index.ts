@@ -248,3 +248,31 @@ export const reviewGradeSchema = z.object({
   id: requiredString('Card id'),
   grade: z.enum(['forgot', 'shaky', 'good', 'easy']),
 });
+
+/** A review card drafted inside a completion flow. */
+export const reviewDraftSchema = z.object({
+  question: z.string().trim(),
+  answer: z.string().trim().default(''),
+});
+export type ReviewDraftInput = z.infer<typeof reviewDraftSchema>;
+
+/** Captured when finishing a lesson. */
+export const lessonCompletionSchema = z.object({
+  ownWords: optionalText,
+  projectApplication: optionalText,
+  reviewCards: z.array(reviewDraftSchema).default([]),
+});
+export type LessonCompletionInput = z.infer<typeof lessonCompletionSchema>;
+
+/** Captured when finishing a lab. */
+export const labCompletionSchema = z.object({
+  timeSpentMinutes: z.coerce.number().int().min(0).default(0),
+  confidenceBefore: z.coerce.number().int().min(1).max(10).nullish(),
+  confidenceAfter: z.coerce.number().int().min(1).max(10).nullish(),
+  thingsGotWrong: optionalText,
+  whatLearned: optionalText,
+  reviewCards: z.array(reviewDraftSchema).default([]),
+  /** Optional new status for the lab's related concept. */
+  conceptStatus: z.enum(conceptStatuses).nullish(),
+});
+export type LabCompletionInput = z.infer<typeof labCompletionSchema>;

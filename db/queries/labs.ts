@@ -98,6 +98,27 @@ export async function updateLabStatus(
   await db.update(labs).set({ status }).where(eq(labs.id, id));
 }
 
+export interface LabCompletionFields {
+  timeSpentMinutes: number;
+  confidenceBefore: number | null;
+  confidenceAfter: number | null;
+  thingsGotWrong: string;
+  whatLearned: string;
+}
+
+/** Save outcome fields and mark the lab completed (completion flow). */
+export async function completeLab(
+  id: string,
+  fields: LabCompletionFields,
+): Promise<Lab> {
+  const [row] = await db
+    .update(labs)
+    .set({ ...fields, status: 'completed' })
+    .where(eq(labs.id, id))
+    .returning();
+  return row;
+}
+
 export async function deleteLab(id: string): Promise<void> {
   await db.delete(labs).where(eq(labs.id, id));
 }

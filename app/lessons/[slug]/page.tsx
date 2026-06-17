@@ -7,6 +7,7 @@ import { DeleteButton } from '@/components/common/delete-button';
 import { PageHeader } from '@/components/common/page-header';
 import { SectionCard } from '@/components/common/section-card';
 import { StatusMenu } from '@/components/common/status-menu';
+import { CompleteLessonDialog } from '@/components/lessons/complete-lesson-dialog';
 import { Markdown } from '@/components/markdown/markdown';
 import { Button } from '@/components/ui/button';
 import { lessonStatusOptions } from '@/components/forms/options';
@@ -38,6 +39,7 @@ export default async function LessonDetailPage({
               options={lessonStatusOptions}
               onSelect={setLessonStatusAction.bind(null, lesson.id)}
             />
+            {lesson.status !== 'completed' && <CompleteLessonDialog lesson={lesson} />}
             <Button variant="outline" size="sm" render={<Link href={`/lessons/${slug}/edit`} />} className="gap-1.5">
               <Pencil className="size-4" />
               Edit

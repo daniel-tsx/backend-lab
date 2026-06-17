@@ -11,6 +11,7 @@ import { DeleteButton } from '@/components/common/delete-button';
 import { PageHeader } from '@/components/common/page-header';
 import { SectionCard } from '@/components/common/section-card';
 import { StatusMenu } from '@/components/common/status-menu';
+import { CompleteLabDialog } from '@/components/labs/complete-lab-dialog';
 import { Markdown } from '@/components/markdown/markdown';
 import { Button } from '@/components/ui/button';
 import { labStatusOptions } from '@/components/forms/options';
@@ -42,6 +43,9 @@ export default async function LabDetailPage({
               options={labStatusOptions}
               onSelect={setLabStatusAction.bind(null, lab.id)}
             />
+            {lab.status !== 'completed' && (
+              <CompleteLabDialog lab={lab} conceptTitle={lab.concept?.title} />
+            )}
             <Button variant="outline" size="sm" render={<Link href={`/labs/${slug}/edit`} />} className="gap-1.5">
               <Pencil className="size-4" />
               Edit

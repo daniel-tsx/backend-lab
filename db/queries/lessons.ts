@@ -75,6 +75,19 @@ export async function updateLessonStatus(
   await db.update(lessons).set({ status }).where(eq(lessons.id, id));
 }
 
+/** Save reflective fields and mark the lesson completed (completion flow). */
+export async function completeLesson(
+  id: string,
+  fields: { ownWords: string; projectApplication: string },
+): Promise<Lesson> {
+  const [row] = await db
+    .update(lessons)
+    .set({ ...fields, status: 'completed' })
+    .where(eq(lessons.id, id))
+    .returning();
+  return row;
+}
+
 export async function deleteLesson(id: string): Promise<void> {
   await db.delete(lessons).where(eq(lessons.id, id));
 }
