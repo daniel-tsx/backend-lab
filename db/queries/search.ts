@@ -8,7 +8,9 @@ import {
   diagrams,
   glossaryTerms,
   labs,
+  learningLogs,
   lessons,
+  projects,
   snippets,
 } from '@/db/schema';
 
@@ -20,7 +22,9 @@ export type SearchResultType =
   | 'diagram'
   | 'decision-guide'
   | 'case-study'
-  | 'glossary';
+  | 'glossary'
+  | 'project'
+  | 'log';
 
 export interface SearchResult {
   type: SearchResultType;
@@ -46,6 +50,8 @@ export async function globalSearch(query: string): Promise<SearchResult[]> {
     guideRows,
     caseRows,
     glossaryRows,
+    projectRows,
+    logRows,
   ] = await Promise.all([
     db
       .select({
@@ -60,12 +66,26 @@ export async function globalSearch(query: string): Promise<SearchResult[]> {
     db
       .select({ id: lessons.id, title: lessons.title, slug: lessons.slug })
       .from(lessons)
-      .where(or(ilike(lessons.title, like), ilike(lessons.summary, like)))
+      .where(
+        or(
+          ilike(lessons.title, like),
+          ilike(lessons.summary, like),
+          ilike(lessons.ownWords, like),
+          ilike(lessons.projectApplication, like),
+        ),
+      )
       .limit(PER_TYPE_LIMIT),
     db
       .select({ id: labs.id, title: labs.title, slug: labs.slug })
       .from(labs)
-      .where(or(ilike(labs.title, like), ilike(labs.description, like)))
+      .where(
+        or(
+          ilike(labs.title, like),
+          ilike(labs.description, like),
+          ilike(labs.notebook, like),
+          ilike(labs.whatLearned, like),
+        ),
+      )
       .limit(PER_TYPE_LIMIT),
     db
       .select({ id: snippets.id, title: snippets.title })
@@ -118,6 +138,35 @@ export async function globalSearch(query: string): Promise<SearchResult[]> {
         or(
           ilike(glossaryTerms.term, like),
           ilike(glossaryTerms.definition, like),
+        ),
+      )
+      .limit(PER_TYPE_LIMIT),
+    db
+      .select({
+        id: projects.id,
+        title: projects.projectName,
+        description: projects.description,
+      })
+      .from(projects)
+      .where(
+        or(
+          ilike(projects.projectName, like),
+          ilike(projects.description, like),
+          ilike(projects.backendRisks, like),
+          ilike(projects.nextBackendAction, like),
+        ),
+      )
+      .limit(PER_TYPE_LIMIT),
+    db
+      .select({ id: learningLogs.id, title: learningLogs.title })
+      .from(learningLogs)
+      .where(
+        or(
+          ilike(learningLogs.title, like),
+          ilike(learningLogs.summary, like),
+          ilike(learningLogs.notes, like),
+          ilike(learningLogs.blockers, like),
+          ilike(learningLogs.nextStep, like),
         ),
       )
       .limit(PER_TYPE_LIMIT),
@@ -179,6 +228,20 @@ export async function globalSearch(query: string): Promise<SearchResult[]> {
       title: r.term,
       subtitle: 'Glossary',
       href: `/glossary#${r.slug}`,
+    })),
+    ...projectRows.map((r) => ({
+      type: 'project' as const,
+      id: r.id,
+      title: r.title,
+      subtitle: r.description || 'Project',
+      href: `/projects/${r.id}`,
+    })),
+    ...logRows.map((r) => ({
+      type: 'log' as const,
+      id: r.id,
+      title: r.title,
+      subtitle: 'Learning log',
+      href: `/logs/${r.id}/edit`,
     })),
   ];
 
