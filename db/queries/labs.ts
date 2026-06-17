@@ -1,4 +1,4 @@
-import { and, desc, eq, ilike, or, sql } from 'drizzle-orm';
+import { and, desc, eq, ilike, inArray, or, sql } from 'drizzle-orm';
 
 import { db } from '@/db';
 import { labs } from '@/db/schema';
@@ -60,6 +60,14 @@ export async function getLabById(id: string): Promise<Lab | undefined> {
 
 export async function labsForConcept(conceptId: string): Promise<Lab[]> {
   return db.select().from(labs).where(eq(labs.relatedConceptId, conceptId));
+}
+
+export async function labsForConcepts(conceptIds: string[]): Promise<Lab[]> {
+  if (conceptIds.length === 0) return [];
+  return db
+    .select()
+    .from(labs)
+    .where(inArray(labs.relatedConceptId, conceptIds));
 }
 
 export async function createLab(input: LabInput): Promise<Lab> {
