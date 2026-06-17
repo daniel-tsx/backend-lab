@@ -264,6 +264,13 @@ export const lessonCompletionSchema = z.object({
 });
 export type LessonCompletionInput = z.infer<typeof lessonCompletionSchema>;
 
+/** Lab runner working notes saved between sessions. */
+export const labNotebookSchema = z.object({
+  notebook: optionalText,
+  confidenceBefore: z.coerce.number().int().min(1).max(10).nullish(),
+});
+export type LabNotebookInput = z.infer<typeof labNotebookSchema>;
+
 /** Captured when finishing a lab. */
 export const labCompletionSchema = z.object({
   timeSpentMinutes: z.coerce.number().int().min(0).default(0),

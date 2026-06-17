@@ -190,6 +190,11 @@ export const labs = pgTable(
       .array()
       .notNull()
       .default(emptyTextArray),
+    // Success-criteria strings the runner has checked off (persisted run state).
+    completedCriteria: text('completed_criteria')
+      .array()
+      .notNull()
+      .default(emptyTextArray),
     status: text('status').$type<LabStatus>().notNull().default('not-started'),
     timeSpentMinutes: integer('time_spent_minutes').notNull().default(0),
     confidenceBefore: integer('confidence_before'),

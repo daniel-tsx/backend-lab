@@ -1,4 +1,4 @@
-import { and, desc, eq, ilike, or } from 'drizzle-orm';
+import { and, desc, eq, ilike, or, sql } from 'drizzle-orm';
 
 import { db } from '@/db';
 import { labs } from '@/db/schema';
@@ -114,6 +114,42 @@ export async function completeLab(
   const [row] = await db
     .update(labs)
     .set({ ...fields, status: 'completed' })
+    .where(eq(labs.id, id))
+    .returning();
+  return row;
+}
+
+// --- Lab runner -------------------------------------------------------------
+
+/** Persist the runner's checked success-criteria for a lab. */
+export async function setLabCompletedCriteria(
+  id: string,
+  completedCriteria: string[],
+): Promise<void> {
+  await db.update(labs).set({ completedCriteria }).where(eq(labs.id, id));
+}
+
+/** Add minutes to the lab's running time total; flips not-started → in-progress. */
+export async function addLabTime(id: string, minutes: number): Promise<Lab> {
+  const [row] = await db
+    .update(labs)
+    .set({
+      timeSpentMinutes: sql`${labs.timeSpentMinutes} + ${minutes}`,
+      status: sql`CASE WHEN ${labs.status} = 'not-started' THEN 'in-progress' ELSE ${labs.status} END`,
+    })
+    .where(eq(labs.id, id))
+    .returning();
+  return row;
+}
+
+/** Save the runner's working notes + confidence-before. */
+export async function saveLabNotebook(
+  id: string,
+  fields: { notebook: string; confidenceBefore: number | null },
+): Promise<Lab> {
+  const [row] = await db
+    .update(labs)
+    .set(fields)
     .where(eq(labs.id, id))
     .returning();
   return row;

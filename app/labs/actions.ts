@@ -3,17 +3,20 @@
 import { revalidatePath } from 'next/cache';
 
 import {
+  addLabTime,
   completeLab,
   createLab,
   createReviewCardsFromDrafts,
   deleteLab,
   getLabById,
+  saveLabNotebook,
+  setLabCompletedCriteria,
   updateConceptStatus,
   updateLab,
   updateLabStatus,
 } from '@/db/queries';
 import { actionError, type ActionResult } from '@/lib/action-result';
-import { labCompletionSchema, labSchema } from '@/lib/validations';
+import { labCompletionSchema, labNotebookSchema, labSchema } from '@/lib/validations';
 import type { LabStatus } from '@/types/enums';
 
 export async function createLabAction(values: unknown): Promise<ActionResult> {
@@ -89,6 +92,58 @@ export async function completeLabAction(
       ok: true,
       message: created > 0 ? `Lab completed · ${created} cards added` : 'Lab completed',
     };
+  } catch (error) {
+    return actionError(error);
+  }
+}
+
+export async function setLabCriteriaAction(
+  id: string,
+  completedCriteria: string[],
+): Promise<ActionResult> {
+  try {
+    await setLabCompletedCriteria(
+      id,
+      completedCriteria.filter((c) => typeof c === 'string'),
+    );
+    revalidatePath('/labs');
+    return { ok: true };
+  } catch (error) {
+    return actionError(error);
+  }
+}
+
+export async function addLabTimeAction(
+  id: string,
+  minutes: number,
+): Promise<ActionResult> {
+  try {
+    const rounded = Math.round(minutes);
+    if (!Number.isFinite(rounded) || rounded <= 0) {
+      return { ok: false, error: 'Enter a positive number of minutes' };
+    }
+    const row = await addLabTime(id, rounded);
+    revalidatePath('/labs');
+    revalidatePath(`/labs/${row.slug}`);
+    return { ok: true, message: `Logged ${rounded} min` };
+  } catch (error) {
+    return actionError(error);
+  }
+}
+
+export async function saveLabNotebookAction(
+  id: string,
+  values: unknown,
+): Promise<ActionResult> {
+  try {
+    const parsed = labNotebookSchema.parse(values);
+    const row = await saveLabNotebook(id, {
+      notebook: parsed.notebook,
+      confidenceBefore: parsed.confidenceBefore ?? null,
+    });
+    revalidatePath('/labs');
+    revalidatePath(`/labs/${row.slug}`);
+    return { ok: true, message: 'Notes saved' };
   } catch (error) {
     return actionError(error);
   }

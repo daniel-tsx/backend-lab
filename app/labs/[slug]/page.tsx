@@ -11,7 +11,7 @@ import { DeleteButton } from '@/components/common/delete-button';
 import { PageHeader } from '@/components/common/page-header';
 import { SectionCard } from '@/components/common/section-card';
 import { StatusMenu } from '@/components/common/status-menu';
-import { CompleteLabDialog } from '@/components/labs/complete-lab-dialog';
+import { LabRunner } from '@/components/labs/lab-runner';
 import { Markdown } from '@/components/markdown/markdown';
 import { Button } from '@/components/ui/button';
 import { labStatusOptions } from '@/components/forms/options';
@@ -43,9 +43,6 @@ export default async function LabDetailPage({
               options={labStatusOptions}
               onSelect={setLabStatusAction.bind(null, lab.id)}
             />
-            {lab.status !== 'completed' && (
-              <CompleteLabDialog lab={lab} conceptTitle={lab.concept?.title} />
-            )}
             <Button variant="outline" size="sm" render={<Link href={`/labs/${slug}/edit`} />} className="gap-1.5">
               <Pencil className="size-4" />
               Edit
@@ -68,6 +65,8 @@ export default async function LabDetailPage({
         )}
       </div>
 
+      <LabRunner lab={lab} conceptTitle={lab.concept?.title ?? null} />
+
       {lab.scenario && (
         <SectionCard title="Scenario">
           <Markdown content={lab.scenario} />
@@ -77,19 +76,6 @@ export default async function LabDetailPage({
       <SectionCard title="Requirements">
         <Markdown content={lab.requirements} />
       </SectionCard>
-
-      {lab.successCriteria.length > 0 && (
-        <SectionCard title="Success criteria">
-          <ul className="space-y-2">
-            {lab.successCriteria.map((c, i) => (
-              <li key={i} className="flex items-center gap-2 text-sm">
-                <span className="size-4 shrink-0 rounded border border-border" />
-                {c}
-              </li>
-            ))}
-          </ul>
-        </SectionCard>
-      )}
 
       {lab.starterCode && (
         <SectionCard title="Starter code">
@@ -128,20 +114,14 @@ export default async function LabDetailPage({
         </SectionCard>
       )}
 
-      {/* Lab notebook */}
-      {(lab.notebook || lab.thingsGotWrong || lab.whatLearned || lab.confidenceAfter != null) && (
-        <SectionCard title="My lab notebook">
+      {/* Completion record */}
+      {(lab.thingsGotWrong || lab.whatLearned || lab.confidenceAfter != null) && (
+        <SectionCard title="Completion notes">
           <div className="space-y-4">
             {(lab.confidenceBefore != null || lab.confidenceAfter != null) && (
               <p className="text-sm text-muted-foreground">
                 Confidence {lab.confidenceBefore ?? '—'} → {lab.confidenceAfter ?? '—'} (of 10)
               </p>
-            )}
-            {lab.notebook && (
-              <div>
-                <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">My solution</p>
-                <Markdown content={lab.notebook} />
-              </div>
             )}
             {lab.thingsGotWrong && (
               <div>
