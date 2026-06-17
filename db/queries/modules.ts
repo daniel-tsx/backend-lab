@@ -96,6 +96,13 @@ export async function updateModule(
   return row;
 }
 
+export async function updateModuleStatus(
+  id: string,
+  status: Module['status'],
+): Promise<void> {
+  await db.update(modules).set({ status }).where(eq(modules.id, id));
+}
+
 export async function deleteModule(id: string): Promise<void> {
   await db.delete(modules).where(eq(modules.id, id));
 }
