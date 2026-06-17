@@ -10,6 +10,10 @@ import {
   LineChart,
   Pie,
   PieChart,
+  PolarAngleAxis,
+  PolarGrid,
+  Radar,
+  RadarChart,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -202,6 +206,36 @@ export function Donut({
           ))}
         </Pie>
       </PieChart>
+    </ResponsiveContainer>
+  );
+}
+
+export function RadarScore({
+  data,
+  max = 5,
+  height = 280,
+}: {
+  data: { dimension: string; value: number }[];
+  max?: number;
+  height?: number;
+}) {
+  return (
+    <ResponsiveContainer width="100%" height={height}>
+      <RadarChart data={data} outerRadius="72%">
+        <PolarGrid stroke="var(--border)" />
+        <PolarAngleAxis
+          dataKey="dimension"
+          tick={{ fill: 'var(--muted-foreground)', fontSize: 11 }}
+        />
+        <Radar
+          dataKey="value"
+          stroke="var(--chart-1)"
+          fill="var(--chart-1)"
+          fillOpacity={0.25}
+          dot
+        />
+        <Tooltip {...tooltipStyle} />
+      </RadarChart>
     </ResponsiveContainer>
   );
 }
