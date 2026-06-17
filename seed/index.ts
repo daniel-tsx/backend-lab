@@ -331,17 +331,13 @@ export async function seed(): Promise<void> {
 
   // --- Learning logs -------------------------------------------------------
   console.log('• Learning logs…');
-  const conceptTitleBySlug = new Map(conceptSeeds.map((c) => [c.slug, c.title]));
-  const labTitleBySlug = new Map(labSeeds.map((l) => [l.slug, l.title]));
   await db.insert(learningLogs).values(
     learningLogSeeds.map((l) => ({
       date: subDays(now, l.daysAgo),
       title: l.title,
       summary: l.summary,
-      conceptsStudied: (l.conceptsStudied ?? []).map(
-        (s) => conceptTitleBySlug.get(s) ?? s,
-      ),
-      labsCompleted: (l.labsCompleted ?? []).map((s) => labTitleBySlug.get(s) ?? s),
+      conceptIds: resolveIds(l.conceptsStudied, conceptId),
+      labIds: resolveIds(l.labsCompleted, labId),
       timeSpentMinutes: l.timeSpentMinutes,
       confidenceChange: l.confidenceChange ?? 0,
       blockers: l.blockers ?? '',

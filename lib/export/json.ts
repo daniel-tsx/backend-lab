@@ -57,7 +57,7 @@ export async function buildExport(): Promise<BackupFile> {
   ]);
 
   return {
-    version: 1,
+    version: 2,
     exportedAt: new Date().toISOString(),
     data: {
       concepts: conceptRows,
@@ -120,7 +120,17 @@ export async function applyImport(backup: BackupFile): Promise<void> {
     reviewCards,
     coerceDates(d.reviewCards, [...TS, 'nextReviewAt', 'lastReviewedAt']),
   );
-  await insert(learningLogs, coerceDates(d.learningLogs, [...TS, 'date']));
+  // v1 backups stored concepts/labs as free text under different column names.
+  // They can't be resolved back to ids, so drop them and keep the entry.
+  const learningLogRows = coerceDates(d.learningLogs, [...TS, 'date']).map(
+    (row) => {
+      const r = row as Record<string, unknown>;
+      delete r.conceptsStudied;
+      delete r.labsCompleted;
+      return r;
+    },
+  );
+  await insert(learningLogs, learningLogRows);
   await insert(glossaryTerms, coerceDates(d.glossaryTerms, TS));
   await insert(appSettings, coerceDates(d.appSettings, ['updatedAt']));
 }

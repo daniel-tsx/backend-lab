@@ -3,12 +3,13 @@
 import { EntityForm } from '@/components/forms/entity-form';
 import {
   DateField,
+  MultiSelectField,
   NumberField,
-  StringListField,
   TextareaField,
   TextField,
 } from '@/components/forms/form-fields';
 import { SectionCard } from '@/components/common/section-card';
+import type { Option } from '@/components/forms/options';
 import { learningLogSchema, type LearningLogInput } from '@/lib/validations';
 import type { ActionResult } from '@/lib/action-result';
 import type { LearningLog } from '@/types';
@@ -18,8 +19,8 @@ export function learningLogToFormValues(log?: LearningLog): LearningLogInput {
     date: log?.date ?? new Date(),
     title: log?.title ?? '',
     summary: log?.summary ?? '',
-    conceptsStudied: log?.conceptsStudied ?? [],
-    labsCompleted: log?.labsCompleted ?? [],
+    conceptIds: log?.conceptIds ?? [],
+    labIds: log?.labIds ?? [],
     timeSpentMinutes: log?.timeSpentMinutes ?? 0,
     confidenceChange: log?.confidenceChange ?? 0,
     blockers: log?.blockers ?? '',
@@ -30,11 +31,15 @@ export function learningLogToFormValues(log?: LearningLog): LearningLogInput {
 
 export function LearningLogForm({
   log,
+  conceptOptions,
+  labOptions,
   action,
   submitLabel,
   cancelHref,
 }: {
   log?: LearningLog;
+  conceptOptions: Option[];
+  labOptions: Option[];
   action: (values: LearningLogInput) => Promise<ActionResult>;
   submitLabel: string;
   cancelHref: string;
@@ -57,8 +62,18 @@ export function LearningLogForm({
           </div>
           <TextField name="title" label="Title" required />
           <TextareaField name="summary" label="Summary" rows={3} />
-          <StringListField name="conceptsStudied" label="Concepts studied" />
-          <StringListField name="labsCompleted" label="Labs completed" />
+          <MultiSelectField
+            name="conceptIds"
+            label="Concepts studied"
+            options={conceptOptions}
+            placeholder="Link concepts…"
+          />
+          <MultiSelectField
+            name="labIds"
+            label="Labs completed"
+            options={labOptions}
+            placeholder="Link labs…"
+          />
         </div>
       </SectionCard>
 

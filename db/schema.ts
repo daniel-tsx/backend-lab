@@ -413,11 +413,10 @@ export const learningLogs = pgTable('learning_logs', {
   date: timestamp('date', { withTimezone: true }).defaultNow().notNull(),
   title: text('title').notNull(),
   summary: text('summary').notNull().default(''),
-  conceptsStudied: text('concepts_studied')
-    .array()
-    .notNull()
-    .default(emptyTextArray),
-  labsCompleted: text('labs_completed').array().notNull().default(emptyTextArray),
+  // UUIDs of the concepts/labs this entry touched (see projects.conceptsUsed
+  // for the same pattern). Resolved to titles for display.
+  conceptIds: text('concept_ids').array().notNull().default(emptyTextArray),
+  labIds: text('lab_ids').array().notNull().default(emptyTextArray),
   timeSpentMinutes: integer('time_spent_minutes').notNull().default(0),
   confidenceChange: integer('confidence_change').notNull().default(0),
   blockers: text('blockers').notNull().default(''),

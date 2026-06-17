@@ -6,7 +6,7 @@ import { DeleteButton } from '@/components/common/delete-button';
 import { EmptyState } from '@/components/common/empty-state';
 import { PageHeader } from '@/components/common/page-header';
 import { Button } from '@/components/ui/button';
-import { listLearningLogs } from '@/db/queries';
+import { listLearningLogsWithLinks } from '@/db/queries';
 import { formatDate, formatMinutes } from '@/lib/format';
 
 import { deleteLearningLogAction } from './actions';
@@ -14,7 +14,7 @@ import { deleteLearningLogAction } from './actions';
 export const metadata = { title: 'Learning Log' };
 
 export default async function LogsPage() {
-  const logs = await listLearningLogs();
+  const logs = await listLearningLogsWithLinks();
 
   return (
     <div>
@@ -66,17 +66,17 @@ export default async function LogsPage() {
                   <DeleteButton action={deleteLearningLogAction.bind(null, log.id)} entity="log entry" iconOnly />
                 </div>
               </div>
-              {(log.conceptsStudied.length > 0 || log.labsCompleted.length > 0) && (
+              {(log.concepts.length > 0 || log.labs.length > 0) && (
                 <div className="mt-3 flex flex-wrap gap-1.5">
-                  {log.conceptsStudied.map((c) => (
-                    <ToneBadge key={c} tone="violet">
-                      {c}
-                    </ToneBadge>
+                  {log.concepts.map((c) => (
+                    <Link key={c.id} href={`/concepts/${c.slug}`}>
+                      <ToneBadge tone="violet">{c.title}</ToneBadge>
+                    </Link>
                   ))}
-                  {log.labsCompleted.map((l) => (
-                    <ToneBadge key={l} tone="teal">
-                      {l}
-                    </ToneBadge>
+                  {log.labs.map((l) => (
+                    <Link key={l.id} href={`/labs/${l.slug}`}>
+                      <ToneBadge tone="teal">{l.title}</ToneBadge>
+                    </Link>
                   ))}
                 </div>
               )}

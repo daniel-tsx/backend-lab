@@ -44,8 +44,8 @@ export default async function ReportsPage() {
   const weekAgo = subDays(now, 7);
   const weekLogs = logs.filter((l) => l.date >= weekAgo);
   const weekMinutes = weekLogs.reduce((s, l) => s + l.timeSpentMinutes, 0);
-  const weekConcepts = new Set(weekLogs.flatMap((l) => l.conceptsStudied));
-  const weekLabs = new Set(weekLogs.flatMap((l) => l.labsCompleted));
+  const weekConcepts = new Set(weekLogs.flatMap((l) => l.conceptIds));
+  const weekLabs = new Set(weekLogs.flatMap((l) => l.labIds));
   const nextSteps = weekLogs.map((l) => l.nextStep).filter(Boolean).slice(0, 4);
 
   const masteredThisMonth = data.concepts.filter(
