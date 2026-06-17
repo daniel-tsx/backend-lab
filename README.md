@@ -9,6 +9,24 @@ when *not* to, and how they map to real SaaS products.
 
 > Status: **current**. Dark "engineering cockpit" UI, desktop-first.
 
+## Daily workflow
+
+The library is wired into a daily loop so you always know what to do next:
+
+- **`/today`** — one focused study session: due reviews, a recommended lesson
+  and lab, your weakest concepts/areas, and the next backend action per project.
+- **Completion flows** — finishing a lesson or lab opens a capture dialog
+  (own-words, project application / what-went-wrong + learned, optional review
+  cards, status), so learning is recorded without editing the whole record.
+- **Lab runner** — work a lab in place: a persisted success-criteria checklist,
+  a timer + manual time logging, and a working-notes scratchpad.
+- **Project backlog** — each project page computes the next backend steps,
+  concepts to learn (with status), and suggested labs/decision guides.
+- **Weekly review** — `/reports` shows what improved, what's stale/overdue,
+  blockers from your logs, and a suggested focus for next week.
+- Learning logs link to **real** concepts and labs (not free text), and global
+  search reaches your projects, logs, lab notebooks, and lesson notes.
+
 ## Stack
 
 - **Next.js 16** (App Router, Server Actions) · React 19 · TypeScript
