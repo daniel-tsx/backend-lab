@@ -45,6 +45,12 @@ export async function getGlossaryTermBySlug(
   });
 }
 
+export async function getGlossaryTermById(
+  id: string,
+): Promise<GlossaryTerm | undefined> {
+  return db.query.glossaryTerms.findFirst({ where: eq(glossaryTerms.id, id) });
+}
+
 export async function createGlossaryTerm(
   input: GlossaryTermInput,
 ): Promise<GlossaryTerm> {
