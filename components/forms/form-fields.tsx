@@ -148,6 +148,7 @@ export function TextareaField({
   description,
   rows = 4,
   required,
+  mono = false,
 }: {
   name: string;
   label?: string;
@@ -155,12 +156,21 @@ export function TextareaField({
   description?: React.ReactNode;
   rows?: number;
   required?: boolean;
+  mono?: boolean;
 }) {
   const { register } = useFormContext();
   const error = useFieldError(name);
   return (
     <FieldShell label={label} htmlFor={name} description={description} error={error} required={required}>
-      <Textarea id={name} rows={rows} placeholder={placeholder} aria-invalid={!!error} {...register(name)} />
+      <Textarea
+        id={name}
+        rows={rows}
+        placeholder={placeholder}
+        aria-invalid={!!error}
+        spellCheck={mono ? false : undefined}
+        className={mono ? 'font-mono text-[13px] leading-relaxed' : undefined}
+        {...register(name)}
+      />
     </FieldShell>
   );
 }

@@ -2,6 +2,7 @@ import {
   BarChart3,
   BookA,
   Boxes,
+  Braces,
   Brain,
   FileText,
   FlaskConical,
@@ -89,6 +90,12 @@ export const navSections: NavSection[] = [
         href: '/diagrams',
         icon: Workflow,
         description: 'Architecture diagram gallery',
+      },
+      {
+        title: 'Snippets',
+        href: '/snippets',
+        icon: Braces,
+        description: 'Reusable backend code snippets',
       },
       {
         title: 'Decision Guides',
