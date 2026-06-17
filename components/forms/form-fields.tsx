@@ -141,6 +141,40 @@ export function NumberField({
   );
 }
 
+export function DateField({
+  name,
+  label,
+  description,
+}: {
+  name: string;
+  label?: string;
+  description?: React.ReactNode;
+}) {
+  const error = useFieldError(name);
+  const toInputValue = (v: unknown): string => {
+    if (!v) return '';
+    const d = v instanceof Date ? v : new Date(v as string);
+    return Number.isNaN(d.getTime()) ? '' : d.toISOString().slice(0, 10);
+  };
+  return (
+    <Controller
+      name={name}
+      render={({ field }) => (
+        <FieldShell label={label} htmlFor={name} description={description} error={error}>
+          <Input
+            id={name}
+            type="date"
+            value={toInputValue(field.value)}
+            onChange={(e) =>
+              field.onChange(e.target.value ? new Date(e.target.value) : null)
+            }
+          />
+        </FieldShell>
+      )}
+    />
+  );
+}
+
 export function TextareaField({
   name,
   label,

@@ -8,6 +8,7 @@ import {
   FlaskConical,
   FolderGit2,
   LayoutDashboard,
+  NotebookPen,
   Layers,
   Network,
   Route,
@@ -131,6 +132,12 @@ export const navSections: NavSection[] = [
   {
     label: 'Insights',
     items: [
+      {
+        title: 'Learning Log',
+        href: '/logs',
+        icon: NotebookPen,
+        description: 'Daily and weekly learning journal',
+      },
       {
         title: 'Reports',
         href: '/reports',
