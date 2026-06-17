@@ -6,7 +6,6 @@ import {
   ConceptStatusBadge,
   LessonStatusBadge,
   ModuleStatusBadge,
-  ToneBadge,
 } from '@/components/common/badges';
 import { DeleteButton } from '@/components/common/delete-button';
 import { PageHeader } from '@/components/common/page-header';
@@ -26,11 +25,11 @@ export default async function ModuleDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const module = await getModuleBySlug(slug);
-  if (!module) notFound();
+  const mod = await getModuleBySlug(slug);
+  if (!mod) notFound();
 
-  const total = module.lessons.length;
-  const completed = module.lessons.filter((l) => l.status === 'completed').length;
+  const total = mod.lessons.length;
+  const completed = mod.lessons.filter((l) => l.status === 'completed').length;
   const pct = total > 0 ? Math.round((completed / total) * 100) : 0;
 
   return (
@@ -38,21 +37,21 @@ export default async function ModuleDetailPage({
       <PageHeader
         backHref="/modules"
         backLabel="Learning Paths"
-        eyebrow={moduleTypeLabels[module.moduleType]}
-        title={module.title}
-        description={module.description}
+        eyebrow={moduleTypeLabels[mod.moduleType]}
+        title={mod.title}
+        description={mod.description}
         actions={
           <>
             <StatusMenu
-              trigger={<ModuleStatusBadge status={module.status} />}
+              trigger={<ModuleStatusBadge status={mod.status} />}
               options={moduleStatusOptions}
-              onSelect={setModuleStatusAction.bind(null, module.id)}
+              onSelect={setModuleStatusAction.bind(null, mod.id)}
             />
             <Button variant="outline" size="sm" render={<Link href={`/modules/${slug}/edit`} />} className="gap-1.5">
               <Pencil className="size-4" />
               Edit
             </Button>
-            <DeleteButton action={deleteModuleAction.bind(null, module.id)} entity="path" />
+            <DeleteButton action={deleteModuleAction.bind(null, mod.id)} entity="path" />
           </>
         }
       />
@@ -60,7 +59,7 @@ export default async function ModuleDetailPage({
       <div className="panel space-y-2 p-4">
         <div className="flex items-center justify-between text-sm">
           <span className="text-muted-foreground">
-            {completed}/{total} lessons · ~{module.estimatedHours}h
+            {completed}/{total} lessons · ~{mod.estimatedHours}h
           </span>
           <span className="font-medium">{pct}%</span>
         </div>
@@ -69,17 +68,17 @@ export default async function ModuleDetailPage({
         </div>
       </div>
 
-      {module.outcome && (
+      {mod.outcome && (
         <SectionCard title="Outcome">
-          <Markdown content={module.outcome} />
+          <Markdown content={mod.outcome} />
         </SectionCard>
       )}
 
       <div className="grid gap-4 lg:grid-cols-2">
         <SectionCard title="Lessons" icon={FileText}>
-          {module.lessons.length > 0 ? (
+          {mod.lessons.length > 0 ? (
             <ul className="divide-y divide-border/60">
-              {module.lessons.map((l) => (
+              {mod.lessons.map((l) => (
                 <li key={l.id} className="flex items-center justify-between gap-2 py-2 first:pt-0">
                   <Link href={`/lessons/${l.slug}`} className="text-sm hover:text-primary">
                     {l.title}
@@ -94,9 +93,9 @@ export default async function ModuleDetailPage({
         </SectionCard>
 
         <SectionCard title="Concepts">
-          {module.concepts.length > 0 ? (
+          {mod.concepts.length > 0 ? (
             <ul className="divide-y divide-border/60">
-              {module.concepts.map((c) => (
+              {mod.concepts.map((c) => (
                 <li key={c.id} className="flex items-center justify-between gap-2 py-2 first:pt-0">
                   <Link href={`/concepts/${c.slug}`} className="text-sm hover:text-primary">
                     {c.title}
@@ -111,9 +110,9 @@ export default async function ModuleDetailPage({
         </SectionCard>
       </div>
 
-      {module.notes && (
+      {mod.notes && (
         <SectionCard title="Notes">
-          <Markdown content={module.notes} />
+          <Markdown content={mod.notes} />
         </SectionCard>
       )}
     </div>

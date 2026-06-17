@@ -79,11 +79,11 @@ export function CommandMenu() {
   }, []);
 
   useEffect(() => {
-    if (query.trim().length < 2) {
-      setResults([]);
-      return;
-    }
     const handle = setTimeout(() => {
+      if (query.trim().length < 2) {
+        setResults([]);
+        return;
+      }
       startTransition(async () => {
         try {
           setResults(await searchAction(query));

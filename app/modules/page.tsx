@@ -8,7 +8,7 @@ import { StatusMenu } from '@/components/common/status-menu';
 import { Button } from '@/components/ui/button';
 import { moduleStatusOptions } from '@/components/forms/options';
 import { listModulesWithLessons } from '@/db/queries';
-import { moduleStatusLabels, moduleTypeLabels } from '@/lib/labels';
+import { moduleTypeLabels } from '@/lib/labels';
 
 import { setModuleStatusAction } from './actions';
 

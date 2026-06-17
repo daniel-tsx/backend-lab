@@ -212,11 +212,9 @@ export function Donut({
 
 export function RadarScore({
   data,
-  max = 5,
   height = 280,
 }: {
   data: { dimension: string; value: number }[];
-  max?: number;
   height?: number;
 }) {
   return (

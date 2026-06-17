@@ -12,7 +12,6 @@ import {
 } from '@/app/concepts/actions';
 import {
   CategoryBadge,
-  ConceptStatusBadge,
   DifficultyBadge,
   ImportanceBadge,
   ToneBadge,

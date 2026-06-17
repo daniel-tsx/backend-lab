@@ -7,7 +7,7 @@ import { FilterBar } from '@/components/common/filter-bar';
 import { PageHeader } from '@/components/common/page-header';
 import { StatusMenu } from '@/components/common/status-menu';
 import { Button } from '@/components/ui/button';
-import { projectStatusOptions, projectTypeOptions } from '@/components/forms/options';
+import { projectStatusOptions } from '@/components/forms/options';
 import { listProjects } from '@/db/queries';
 import { projectTypeLabels } from '@/lib/labels';
 import type { ProjectStatus } from '@/types/enums';

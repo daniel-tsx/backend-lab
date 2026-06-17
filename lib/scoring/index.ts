@@ -181,9 +181,6 @@ export function weaknessByCategory(data: ScoringData): CategoryWeakness[] {
   const appliedConceptIds = new Set(
     data.projects.flatMap((p) => [...p.conceptsUsed, ...p.conceptsToLearn]),
   );
-  const conceptCategoryById = new Map(
-    data.concepts.map((c) => [c.id, c.category]),
-  );
 
   const results: CategoryWeakness[] = conceptCategories.map((category) => {
     const conceptsInCat = data.concepts.filter((c) => c.category === category);
