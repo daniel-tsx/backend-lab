@@ -55,6 +55,13 @@ export async function updateProject(
   return row;
 }
 
+export async function updateProjectStatus(
+  id: string,
+  status: ProjectStatus,
+): Promise<void> {
+  await db.update(projects).set({ status }).where(eq(projects.id, id));
+}
+
 export async function deleteProject(id: string): Promise<void> {
   await db.delete(projects).where(eq(projects.id, id));
 }
