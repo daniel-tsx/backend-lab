@@ -157,7 +157,7 @@ export async function globalSearch(query: string): Promise<SearchResult[]> {
       id: r.id,
       title: r.title,
       subtitle: 'Diagram',
-      href: `/diagrams?id=${r.id}`,
+      href: `/diagrams/${r.id}`,
     })),
     ...guideRows.map((r) => ({
       type: 'decision-guide' as const,
