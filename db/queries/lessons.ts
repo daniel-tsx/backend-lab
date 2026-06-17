@@ -1,7 +1,7 @@
-import { asc, eq } from 'drizzle-orm';
+import { asc, eq, inArray } from 'drizzle-orm';
 
 import { db } from '@/db';
-import { lessons } from '@/db/schema';
+import { lessons, moduleConcepts } from '@/db/schema';
 import { slugify } from '@/lib/slug';
 import type { LessonInput } from '@/lib/validations';
 import type { LessonStatus } from '@/types/enums';
@@ -77,6 +77,21 @@ export async function updateLessonStatus(
 
 export async function deleteLesson(id: string): Promise<void> {
   await db.delete(lessons).where(eq(lessons.id, id));
+}
+
+/** Lessons in any module that contains the given concept. */
+export async function lessonsForConcept(conceptId: string): Promise<Lesson[]> {
+  const links = await db
+    .select({ moduleId: moduleConcepts.moduleId })
+    .from(moduleConcepts)
+    .where(eq(moduleConcepts.conceptId, conceptId));
+  const moduleIds = [...new Set(links.map((l) => l.moduleId))];
+  if (moduleIds.length === 0) return [];
+  return db
+    .select()
+    .from(lessons)
+    .where(inArray(lessons.moduleId, moduleIds))
+    .orderBy(asc(lessons.order));
 }
 
 export async function recentlyCompletedLessons(
