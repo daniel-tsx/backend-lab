@@ -13,7 +13,7 @@ import {
   Sparkles,
 } from 'lucide-react';
 
-import { Button } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -26,6 +26,7 @@ import { Sheet, SheetContent, SheetTitle, SheetTrigger } from '@/components/ui/s
 import { SidebarNav } from '@/components/layout/sidebar-nav';
 import { openCommandMenu } from '@/components/search/command-menu';
 import { activeNavItem } from '@/lib/nav';
+import { cn } from '@/lib/utils';
 
 export function TopBar() {
   const pathname = usePathname();
@@ -76,14 +77,12 @@ export function TopBar() {
 
         <DropdownMenu>
           <DropdownMenuTrigger
-            render={
-              <Button size="sm" className="gap-1.5">
-                <Sparkles className="size-4" />
-                <span className="hidden sm:inline">Quick capture</span>
-                <Plus className="size-4 sm:hidden" />
-              </Button>
-            }
-          />
+            className={cn(buttonVariants({ size: 'sm' }), 'gap-1.5')}
+          >
+            <Sparkles className="size-4" />
+            <span className="hidden sm:inline">Quick capture</span>
+            <Plus className="size-4 sm:hidden" />
+          </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-60">
             <DropdownMenuLabel>Capture a thought</DropdownMenuLabel>
             <DropdownMenuItem onClick={() => router.push('/logs/new')}>
