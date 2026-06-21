@@ -2,8 +2,8 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Terminal } from 'lucide-react';
 
+import { LogoMark } from '@/components/brand/logo-mark';
 import { cn } from '@/lib/utils';
 import { activeNavItem, navSections } from '@/lib/nav';
 
@@ -18,9 +18,7 @@ export function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
         onClick={onNavigate}
         className="flex items-center gap-3 px-5 py-5"
       >
-        <span className="grid size-9 place-items-center rounded-xl bg-primary/15 text-primary ring-1 ring-primary/25">
-          <Terminal className="size-5" />
-        </span>
+        <LogoMark className="size-9" />
         <span className="flex flex-col leading-tight">
           <span className="text-sm font-semibold tracking-tight">
             Backend Lab
