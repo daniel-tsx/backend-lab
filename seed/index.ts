@@ -1,6 +1,6 @@
 import 'dotenv/config';
 
-import { addDays, subDays } from 'date-fns';
+import { subDays } from 'date-fns';
 import { sql } from 'drizzle-orm';
 
 import { db } from '@/db';
@@ -61,6 +61,12 @@ export async function seed(): Promise<void> {
   console.log('• Clearing existing data…');
   await clearAllData();
 
+  // NOTE: the seed loads the reference *content* (concepts, lessons, labs,
+  // cases, decision guides, projects) at a CLEAN SLATE. All learning progress —
+  // statuses, confidence, review schedules, time spent, personal reflections,
+  // and the journal — starts at zero so the lab reflects what you've actually
+  // learned. Progress fields in the seed data are intentionally ignored here.
+
   // --- Concepts (insert, then wire relations by slug) ----------------------
   console.log('• Concepts…');
   const conceptRows = await db
@@ -72,7 +78,7 @@ export async function seed(): Promise<void> {
         summary: c.summary,
         category: c.category,
         difficulty: c.difficulty,
-        status: c.status ?? 'not-started',
+        status: 'not-started' as const,
         importance: c.importance ?? 'medium',
         mentalModel: c.mentalModel ?? '',
         howItWorks: c.howItWorks ?? '',
@@ -110,9 +116,9 @@ export async function seed(): Promise<void> {
         moduleType: m.moduleType,
         order: m.order,
         estimatedHours: m.estimatedHours,
-        status: m.status ?? 'not-started',
+        status: 'not-started' as const,
         outcome: m.outcome ?? '',
-        notes: m.notes ?? '',
+        notes: '',
       })),
     )
     .returning({ id: modules.id, slug: modules.slug });
@@ -139,15 +145,15 @@ export async function seed(): Promise<void> {
       slug: l.slug,
       title: l.title,
       order: l.order,
-      status: l.status ?? 'not-started',
+      status: 'not-started' as const,
       summary: l.summary,
       body: l.body,
       keyTakeaways: l.keyTakeaways ?? [],
       questionsToAnswer: l.questionsToAnswer ?? [],
       commonMisconceptions: l.commonMisconceptions ?? [],
       practicalChecklist: l.practicalChecklist ?? [],
-      ownWords: l.ownWords ?? '',
-      projectApplication: l.projectApplication ?? '',
+      ownWords: '',
+      projectApplication: '',
     })),
   );
 
@@ -163,7 +169,7 @@ export async function seed(): Promise<void> {
         moduleId: l.moduleSlug ? (moduleId.get(l.moduleSlug) ?? null) : null,
         difficulty: l.difficulty,
         labType: l.labType,
-        status: l.status ?? 'not-started',
+        status: 'not-started' as const,
         description: l.description,
         scenario: l.scenario,
         requirements: l.requirements,
@@ -171,13 +177,13 @@ export async function seed(): Promise<void> {
         expectedSolution: l.expectedSolution ?? '',
         hints: l.hints ?? [],
         successCriteria: l.successCriteria ?? [],
-        timeSpentMinutes: l.timeSpentMinutes ?? 0,
-        confidenceBefore: l.confidenceBefore ?? null,
-        confidenceAfter: l.confidenceAfter ?? null,
-        notes: l.notes ?? '',
-        notebook: l.notebook ?? '',
-        thingsGotWrong: l.thingsGotWrong ?? '',
-        whatLearned: l.whatLearned ?? '',
+        timeSpentMinutes: 0,
+        confidenceBefore: null,
+        confidenceAfter: null,
+        notes: '',
+        notebook: '',
+        thingsGotWrong: '',
+        whatLearned: '',
       })),
     )
     .returning({ id: labs.id, slug: labs.slug });
@@ -193,7 +199,7 @@ export async function seed(): Promise<void> {
         title: c.title,
         domain: c.domain,
         difficulty: c.difficulty,
-        status: c.status ?? 'not-started',
+        status: 'not-started' as const,
         problemStatement: c.problemStatement,
         functionalRequirements: c.functionalRequirements ?? [],
         nonFunctionalRequirements: c.nonFunctionalRequirements ?? [],
@@ -209,7 +215,7 @@ export async function seed(): Promise<void> {
         costConsiderations: c.costConsiderations ?? '',
         tradeoffs: c.tradeoffs ?? '',
         finalNotes: c.finalNotes ?? '',
-        reviewScores: c.reviewScores ?? null,
+        reviewScores: null,
       })),
     )
     .returning({ id: caseStudies.id, slug: caseStudies.slug });
@@ -310,41 +316,41 @@ export async function seed(): Promise<void> {
   // --- Review cards --------------------------------------------------------
   console.log('• Review cards…');
   await db.insert(reviewCards).values(
-    reviewCardSeeds.map((r) => {
-      const dueInDays = r.dueInDays ?? 0;
-      const reviewCount = r.reviewCount ?? 0;
-      return {
-        relatedConceptId: r.conceptSlug ? (conceptId.get(r.conceptSlug) ?? null) : null,
-        question: r.question,
-        answer: r.answer,
-        difficulty: r.difficulty ?? 'medium',
-        confidence: r.confidence ?? 'low',
-        status: 'active' as const,
-        reviewCount,
-        intervalDays: Math.max(0, dueInDays),
-        easeFactor: 2.5,
-        nextReviewAt: addDays(now, dueInDays),
-        lastReviewedAt: reviewCount > 0 ? subDays(now, Math.max(1, dueInDays === 0 ? 1 : Math.abs(dueInDays))) : null,
-      };
-    }),
+    reviewCardSeeds.map((r) => ({
+      relatedConceptId: r.conceptSlug ? (conceptId.get(r.conceptSlug) ?? null) : null,
+      question: r.question,
+      answer: r.answer,
+      difficulty: r.difficulty ?? 'medium',
+      // Clean slate: every card is unreviewed and due immediately.
+      confidence: 'low' as const,
+      status: 'active' as const,
+      reviewCount: 0,
+      intervalDays: 0,
+      easeFactor: 2.5,
+      nextReviewAt: now,
+      lastReviewedAt: null,
+    })),
   );
 
   // --- Learning logs -------------------------------------------------------
+  // The journal starts empty — you write entries as you study.
   console.log('• Learning logs…');
-  await db.insert(learningLogs).values(
-    learningLogSeeds.map((l) => ({
-      date: subDays(now, l.daysAgo),
-      title: l.title,
-      summary: l.summary,
-      conceptIds: resolveIds(l.conceptsStudied, conceptId),
-      labIds: resolveIds(l.labsCompleted, labId),
-      timeSpentMinutes: l.timeSpentMinutes,
-      confidenceChange: l.confidenceChange ?? 0,
-      blockers: l.blockers ?? '',
-      notes: l.notes ?? '',
-      nextStep: l.nextStep ?? '',
-    })),
-  );
+  if (learningLogSeeds.length > 0) {
+    await db.insert(learningLogs).values(
+      learningLogSeeds.map((l) => ({
+        date: subDays(now, l.daysAgo),
+        title: l.title,
+        summary: l.summary,
+        conceptIds: resolveIds(l.conceptsStudied, conceptId),
+        labIds: resolveIds(l.labsCompleted, labId),
+        timeSpentMinutes: l.timeSpentMinutes,
+        confidenceChange: l.confidenceChange ?? 0,
+        blockers: l.blockers ?? '',
+        notes: l.notes ?? '',
+        nextStep: l.nextStep ?? '',
+      })),
+    );
+  }
 
   // --- Glossary ------------------------------------------------------------
   console.log('• Glossary…');
