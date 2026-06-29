@@ -1,0 +1,45 @@
+<svg width="248" height="64" viewBox="0 0 248 64" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Backend Lab — Architecture cockpit">
+  <style>
+    /* Base = final visible state; mark + wordmark always show without motion. */
+    .bl-spine, .bl-bowl-t, .bl-bowl-b { stroke-dashoffset: 0; }
+    .bl-term, .bl-spark, .bl-word, .bl-eyebrow { opacity: 1; }
+    @keyframes bl-draw { from { stroke-dashoffset: 100; } to { stroke-dashoffset: 0; } }
+    @keyframes bl-fade { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes bl-rise { from { opacity: 0; transform: translateX(-4px); } to { opacity: 1; transform: translateX(0); } }
+    @keyframes bl-spark-in {
+      0%   { opacity: 0; transform: scale(0.6); }
+      60%  { opacity: 1; transform: scale(1.12); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+    @media (prefers-reduced-motion: no-preference) {
+      .bl-spine, .bl-bowl-t, .bl-bowl-b {
+        stroke-dasharray: 100;
+        animation: bl-draw 0.5s cubic-bezier(.22,.61,.36,1) both;
+      }
+      .bl-bowl-t { animation-delay: 0.2s; animation-duration: 0.46s; }
+      .bl-bowl-b { animation-delay: 0.32s; animation-duration: 0.46s; }
+      .bl-term  { opacity: 0; animation: bl-fade 0.18s ease 0.64s forwards; }
+      .bl-spark {
+        opacity: 0; transform-box: fill-box; transform-origin: center;
+        animation: bl-spark-in 0.42s ease 0.76s forwards;
+      }
+      .bl-word    { opacity: 0; animation: bl-rise 0.5s cubic-bezier(.22,.61,.36,1) 0.5s both; }
+      .bl-eyebrow { opacity: 0; animation: bl-fade 0.5s ease 0.72s both; }
+    }
+  </style>
+  <rect x="3" y="3" width="58" height="58" rx="16" fill="#8b5cf6" />
+  <g stroke="#ffffff" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <path class="bl-spine"  pathLength="100" d="M19 15 V49" />
+    <path class="bl-bowl-t" pathLength="100" d="M19 15 H32 a9.5 8.5 0 0 1 0 17 H19" />
+    <path class="bl-bowl-b" pathLength="100" d="M19 32 H35 a9.5 8.5 0 0 1 0 17 H19" />
+  </g>
+  <g class="bl-term" fill="#ffffff">
+    <circle cx="19" cy="15" r="3.6" />
+    <circle cx="19" cy="49" r="3.6" />
+  </g>
+  <circle class="bl-spark" cx="19" cy="32" r="4.6" fill="#2dd4bf" />
+  <text class="bl-word" x="78" y="30" font-family="ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif" font-size="23" font-weight="700" letter-spacing="-0.5">
+    <tspan fill="#ffffff">Backend </tspan><tspan fill="#a78bfa">Lab</tspan>
+  </text>
+  <text class="bl-eyebrow" x="79" y="48" font-family="ui-monospace, 'Geist Mono', SFMono-Regular, Menlo, monospace" font-size="10.5" font-weight="600" letter-spacing="2.2" fill="#8b8f9e">ARCHITECTURE COCKPIT</text>
+</svg>

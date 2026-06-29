@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 
 import { AppShell } from "@/components/layout/app-shell";
@@ -20,12 +20,17 @@ const geistMono = Geist_Mono({
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"),
   title: {
     default: "Backend Architecture Lab",
     template: "%s · Backend Lab",
   },
   description:
     "A personal backend architecture learning cockpit — concepts, labs, system design, and spaced review.",
+};
+
+export const viewport: Viewport = {
+  themeColor: "#14161e",
 };
 
 export default function RootLayout({

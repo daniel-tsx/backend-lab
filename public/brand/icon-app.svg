@@ -1,18 +1,17 @@
 <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Backend Lab">
   <title>Backend Lab</title>
-  <!-- violet badge -->
-  <rect x="3" y="3" width="58" height="58" rx="16" fill="#8b5cf6" />
-  <!-- Backbone B: spine (service backbone) + two node-loops -->
+  <!-- Full-bleed app-icon master (apple-touch + PWA maskable): the violet fills
+       the whole tile so iOS/Android corner masking looks intentional. The mark
+       sits inside the maskable safe zone (central 80%). -->
+  <rect width="64" height="64" fill="#8b5cf6" />
   <g stroke="#ffffff" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" fill="none">
     <path d="M19 15 V49" />
     <path d="M19 15 H32 a9.5 8.5 0 0 1 0 17 H19" />
     <path d="M19 32 H35 a9.5 8.5 0 0 1 0 17 H19" />
   </g>
-  <!-- spine terminal nodes (bus endpoints) -->
   <g fill="#ffffff">
     <circle cx="19" cy="15" r="3.6" />
     <circle cx="19" cy="49" r="3.6" />
   </g>
-  <!-- teal lab spark: the live load-bearing junction node -->
   <circle cx="19" cy="32" r="4.6" fill="#2dd4bf" />
 </svg>

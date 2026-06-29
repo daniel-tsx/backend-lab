@@ -1,6 +1,14 @@
 /**
- * The Backend Lab brand mark — a backend "data stack" with a teal lab spark.
- * Mirrors public/logo-mark.svg and app/icon.svg (the favicon source).
+ * The Backend Lab brand mark — "Backbone B".
+ *
+ * A hand-engineered capital B read as a backend system: the spine is a vertical
+ * service backbone (a data bus) terminated by two white node points, the two
+ * counters are architecture-node loops bound to it, and a single teal "lab
+ * spark" sits exactly on the load-bearing junction — the one live/active node.
+ *
+ * Static version. Mirrors public/logo-mark.svg. The favicon (app/icon.svg) uses
+ * a simplified variant (no terminal dots, heavier stroke) tuned for 16px.
+ * For the header/navbar, prefer <AnimatedLogoMark> for a one-shot reveal.
  */
 export function LogoMark({ className }: { className?: string }) {
   return (
@@ -13,15 +21,22 @@ export function LogoMark({ className }: { className?: string }) {
       className={className}
     >
       <rect x="3" y="3" width="58" height="58" rx="16" fill="#8b5cf6" />
+      <g
+        stroke="#ffffff"
+        strokeWidth="5.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
+      >
+        <path d="M19 15 V49" />
+        <path d="M19 15 H32 a9.5 8.5 0 0 1 0 17 H19" />
+        <path d="M19 32 H35 a9.5 8.5 0 0 1 0 17 H19" />
+      </g>
       <g fill="#ffffff">
-        <ellipse cx="31" cy="22" rx="14" ry="4.8" />
-        <path d="M17 22 L17 42 A14 4.8 0 0 0 45 42 L45 22 A14 4.8 0 0 1 17 22 Z" />
+        <circle cx="19" cy="15" r="3.6" />
+        <circle cx="19" cy="49" r="3.6" />
       </g>
-      <g stroke="#8b5cf6" strokeWidth="2.4" fill="none" strokeLinecap="round">
-        <path d="M17 31.5 A14 4.8 0 0 0 45 31.5" />
-        <path d="M17 41 A14 4.8 0 0 0 45 41" />
-      </g>
-      <circle cx="47" cy="16" r="6.5" fill="#2dd4bf" stroke="#8b5cf6" strokeWidth="2.5" />
+      <circle cx="19" cy="32" r="4.6" fill="#2dd4bf" />
     </svg>
   );
 }

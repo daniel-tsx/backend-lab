@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
-import { LogoMark } from '@/components/brand/logo-mark';
+import { AnimatedLogoMark } from '@/components/brand/animated-logo-mark';
 import { cn } from '@/lib/utils';
 import { activeNavItem, navSections } from '@/lib/nav';
 
@@ -18,10 +18,10 @@ export function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
         onClick={onNavigate}
         className="flex items-center gap-3 px-5 py-5"
       >
-        <LogoMark className="size-9" />
+        <AnimatedLogoMark className="size-9" />
         <span className="flex flex-col leading-tight">
           <span className="text-sm font-semibold tracking-tight">
-            Backend Lab
+            Backend <span className="text-primary">Lab</span>
           </span>
           <span className="text-[11px] text-muted-foreground">
             Architecture cockpit
